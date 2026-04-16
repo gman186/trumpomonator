@@ -9,8 +9,9 @@ import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import TextVectorization
+from tensorflow.keras.layers import Dropout
 from tensorflow.keras.optimizers import Adam
-opt = Adam(learning_rate = 0.003)
+opt = Adam(learning_rate = 0.003) #define optimizer
 with open(pathToControl) as file:
     controlTexts = []
     info = csv.reader(file)
@@ -39,14 +40,23 @@ with open(pathToBiden) as file:
     bidenTexts = bidenTexts[1:]
 
 
-front = TextVectorization(split="whitespace", output_mode="multi_hot", standardize=None)
+front = TextVectorization(split="character", output_mode="multi_hot", standardize=None) #define first layer
 front.adapt(trumpTexts)
-model = Sequential([
-    front,
+model = Sequential([ #create and define model
+    front, #use text vectorize layer as first layer
     Dense(128, activation="relu"),
+    Dropout(rate=0.5),
     Dense(128,activation="relu"),
+    Dropout(rate=0.5),
+    Dense(256,activation="relu"),
+    Dropout(rate=0.5),
+    Dense(256,activation="relu"),
+    Dropout(rate=0.5),
+    Dense(256,activation="relu"),
+    Dropout(rate=0.5),
+    Dense(128,activation="relu"),
+    Dropout(rate=0.5),
     Dense(64,activation="relu"),
-    Dense(32,activation="relu"),
     Dense(16,activation="relu"),
     Dense(1,activation="sigmoid")
 ])
@@ -67,7 +77,7 @@ def prepData(political,control, biden, trump): #sort, combine, and label the dat
     for trumpTweet in trump:
         Trump.append((trumpTweet,1)) #label trump's data as trump
     random.shuffle(Political) #shuffle republican and democrat tweets
-    combinedData =  Trump[:5000] + Control[:5000] + Political[:5000] + Biden[:5000] #add 5000 samples of each dataset
+    combinedData =  Trump[:5000] + Control[:2500] + Political[:2500] + Biden[:2500] #add 5000 samples of each dataset
     inp = []
     out = []
     for item in combinedData: #format them into lists of lists
@@ -79,13 +89,13 @@ def prepData(political,control, biden, trump): #sort, combine, and label the dat
 
 
 inp,out = prepData(politicalTexts,controlTexts,bidenTexts,trumpTexts) #prepare the lists of texts to be labeled
-model.fit(tf.convert_to_tensor(inp),tf.convert_to_tensor(out),epochs=10,batch_size=32)
+model.fit(tf.convert_to_tensor(inp),tf.convert_to_tensor(out),epochs=50,batch_size=32)
 
 while True:
     print("Type tweet:")
     tweet= input("")
-    probability = 100*model.predict(tf.convert_to_tensor([tweet]))[0][0]
+    probability = 100*model.predict(tf.convert_to_tensor([tweet]))[0][0] #calculate probability if it was trump
     if probability >=50:
-        print("We are " + str(probability)+"% sure this was Trump")
+        print("We are " + str(probability)+"% sure this was Trump") #print probability if it was likely trump
     else:
-        print("We are " + str(100-probability)+"% sure this was not Trump")
+        print("We are " + str(100-probability)+"% sure this was not Trump") #print probability if it was likely not trump
