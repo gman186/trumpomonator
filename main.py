@@ -9,6 +9,10 @@ import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import TextVectorization
+from tensorflow.keras.layers import Embedding
+from tensorflow.keras.layers import Flatten
+
+
 from tensorflow.keras.layers import Dropout
 from tensorflow.keras.optimizers import Adam
 opt = Adam(learning_rate = 0.003) #define optimizer
@@ -43,7 +47,9 @@ with open(pathToBiden) as file:
 front = TextVectorization(split="whitespace", output_mode="multi_hot", standardize=None) #define first layer
 front.adapt(trumpTexts)
 model = Sequential([ #create and define model
-    front, #use text vectorize layer as first layer
+    front,
+    Embedding(front.vocabulary_size(),16),
+    Flatten(), #use text vectorize layer as first layer
     Dense(128, activation="relu"),
     Dropout(rate=0.5),
     Dense(128,activation="relu"),
