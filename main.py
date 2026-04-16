@@ -40,17 +40,13 @@ with open(pathToBiden) as file:
     bidenTexts = bidenTexts[1:]
 
 
-front = TextVectorization(split="character", output_mode="multi_hot", standardize=None) #define first layer
+front = TextVectorization(split="whitespace", output_mode="multi_hot", standardize=None) #define first layer
 front.adapt(trumpTexts)
 model = Sequential([ #create and define model
     front, #use text vectorize layer as first layer
     Dense(128, activation="relu"),
     Dropout(rate=0.5),
     Dense(128,activation="relu"),
-    Dropout(rate=0.5),
-    Dense(256,activation="relu"),
-    Dropout(rate=0.5),
-    Dense(256,activation="relu"),
     Dropout(rate=0.5),
     Dense(256,activation="relu"),
     Dropout(rate=0.5),
@@ -77,7 +73,7 @@ def prepData(political,control, biden, trump): #sort, combine, and label the dat
     for trumpTweet in trump:
         Trump.append((trumpTweet,1)) #label trump's data as trump
     random.shuffle(Political) #shuffle republican and democrat tweets
-    combinedData =  Trump[:5000] + Control[:2500] + Political[:2500] + Biden[:2500] #add 5000 samples of each dataset
+    combinedData =  Trump[:5000] + Control[:5000] + Political[:5000] + Biden[:5000] #add 5000 samples of each dataset
     inp = []
     out = []
     for item in combinedData: #format them into lists of lists
@@ -89,7 +85,7 @@ def prepData(political,control, biden, trump): #sort, combine, and label the dat
 
 
 inp,out = prepData(politicalTexts,controlTexts,bidenTexts,trumpTexts) #prepare the lists of texts to be labeled
-model.fit(tf.convert_to_tensor(inp),tf.convert_to_tensor(out),epochs=50,batch_size=32)
+model.fit(tf.convert_to_tensor(inp),tf.convert_to_tensor(out),epochs=10,batch_size=32)
 
 while True:
     print("Type tweet:")
