@@ -84,4 +84,8 @@ model.fit(tf.convert_to_tensor(inp),tf.convert_to_tensor(out),epochs=10,batch_si
 while True:
     print("Type tweet:")
     tweet= input("")
-    print("We are " + str(100*model.predict(tf.convert_to_tensor([tweet]))[0][0])+"% sure this was Trump")
+    probability = 100*model.predict(tf.convert_to_tensor([tweet]))[0][0]
+    if probability >=50:
+        print("We are " + str(probability)+"% sure this was Trump")
+    else:
+        print("We are " + str(100-probability)+"% sure this was not Trump")
