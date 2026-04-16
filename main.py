@@ -11,27 +11,27 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import TextVectorization
 from tensorflow.keras.optimizers import Adam
 opt = Adam(learning_rate = 0.003)
-with open(pathToControl,encoding="utf-8") as file:
+with open(pathToControl) as file:
     controlTexts = []
     info = csv.reader(file)
     for row in info:
         controlTexts.append(row[1])
 
-with open(pathToTrump,encoding="utf-8") as file:
+with open(pathToTrump) as file:
     trumpTexts = []
     info = csv.reader(file)
     for row in info:
         trumpTexts.append(row[1])
     trumpTexts = trumpTexts[1:]
 
-with open(pathToPolitical,encoding="utf-8") as file:
+with open(pathToPolitical) as file:
     politicalTexts = []
     info = csv.reader(file)
     for row in info:
         politicalTexts.append(row[2])
     politicalTexts = politicalTexts[1:]
 
-with open(pathToBiden,encoding="utf-8") as file:
+with open(pathToBiden) as file:
     bidenTexts = []
     info = csv.reader(file)
     for row in info:
