@@ -10,6 +10,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import TextVectorization
 from tensorflow.keras.layers import Embedding
+
 from tensorflow.keras.layers import Flatten
 
 
@@ -79,6 +80,10 @@ def prepData(political,control, biden, trump): #sort, combine, and label the dat
     for trumpTweet in trump:
         Trump.append((trumpTweet,1)) #label trump's data as trump
     random.shuffle(Political) #shuffle republican and democrat tweets
+    random.shuffle(Biden) #shuffle republican and democrat tweets
+    random.shuffle(Trump) #shuffle republican and democrat tweets
+    random.shuffle(Control) #shuffle republican and democrat tweets
+
     combinedData =  Trump[:5000] + Control[:5000] + Political[:5000] + Biden[:5000] #add 5000 samples of each dataset
     inp = []
     out = []
