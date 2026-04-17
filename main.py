@@ -47,9 +47,9 @@ with open(pathToBiden) as file:
 front = TextVectorization(split="whitespace", output_mode="multi_hot", standardize=None) #define first layer
 front.adapt(trumpTexts)
 model = Sequential([ #create and define model
-    front,
-    Embedding(front.vocabulary_size(),16),
-    Flatten(), #use text vectorize layer as first layer
+    front, #use text vectorize layer as first layer
+    #Embedding(front.vocabulary_size(),16),
+    #Flatten(), 
     Dense(128, activation="relu"),
     Dropout(rate=0.5),
     Dense(128,activation="relu"),
